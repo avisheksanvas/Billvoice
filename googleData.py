@@ -7,9 +7,11 @@ import pickle
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow,Flow
 from google.auth.transport.requests import Request
+from tkinter import messagebox
 
 billSheetID = sheetData.billSheetID
 sheets = sheetData.sheets
+qtyLeftCol = 'F'
 
 def authenticate():
 	SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
@@ -36,7 +38,7 @@ def search( partNo ):
 		# Different orders placed for different brands level
 		for order in range( sheetInfo[ 'orders' ] ):
 			# Search for PartNo for a particular order of a particular brand and add to options
-			sheetRange = 'ORDER%d!A1:F50000' % ( order + 1 )
+			sheetRange = 'ORDER%d!A1:G50000' % ( order + 1 )
 			sheet = service.spreadsheets()
 			result_input = sheet.values().get( spreadsheetId=sheetInfo[ 'id' ], range=sheetRange ).execute()
 			values_input = result_input.get( 'values', [])
@@ -56,6 +58,7 @@ def search( partNo ):
 						option[ 'PartDesc' ] = df.loc[ idx, 'PartDesc' ]
 						option[ 'Price' ] = df.loc[ idx, 'Price' ]
 						option[ 'QtyLeft' ] = df.loc[ idx, 'QtyLeft' ]
+						option[ 'CostPrice' ] = df.loc[ idx, 'CostPrice' ]
 						options.append( option )
 	return options
 	
@@ -72,6 +75,13 @@ def getMaxBillID():
 	else:
 		return 0
 
+def createBillText( items ):
+	bill = ""
+	for item in items:
+		billRow = "Part: " + item[ 'PartNo' ] + "---Qty: " + str( item[ 'FinalQty' ] ) + "---Discount: " + item[ 'Discount' ].get()
+		bill += "\n" + billRow
+	return bill
+		
 def writeBill( bill, customer ):
 	sheet = service.spreadsheets()
 	billID = getMaxBillID() + 1
@@ -79,15 +89,28 @@ def writeBill( bill, customer ):
 	billDate = billDate.strftime("%x")
 	total = 0
 	detailValues = []
+	finalBill = []
 	for item in bill:
-		qty = min( int( item[ 'Qty' ].get() ), int( item[ 'QtyLeft' ] ) )
-		if qty <= 0:
+		item[ 'FinalQty' ] = min( int( item[ 'Qty' ].get() ), int( item[ 'QtyLeft' ] ) )
+		if item[ 'FinalQty' ] <= 0:
 			continue
+		finalBill.append( item )
 		
+	# If no items in bill, return
+	if len( finalBill ) < 1:
+		messagebox.showinfo( "Not Available", "Please select some availabe items" )
+		return
+	
+	billText = createBillText( finalBill )
+	confirm = messagebox.askokcancel( "Confirm Bill", billText )
+	if not confirm:
+		return
+	
+	for item in finalBill:
 		# Create detailed row to add in the bill sheet
 		detailValueRow = [ str( billID ),
 					 	   item[ 'PartNo' ],
-					 	   qty,
+					 	   item[ 'FinalQty' ],
 						   item[ 'Brand' ],
 						   item[ 'Sheet' ],
 					 	   item[ 'Price' ],
@@ -95,8 +118,8 @@ def writeBill( bill, customer ):
 		detailValues.append( detailValueRow )
 
 		# Update the stock in the stock sheet
-		qtyLeft = max( 0, int( item[ 'QtyLeft' ] ) - int( item[ 'Qty' ].get() ) )
-		sheetRange = item[ 'Sheet' ] + 'F%d' % item[ 'IdxInSheet' ]
+		qtyLeft = int( item[ 'QtyLeft' ] ) - item[ 'FinalQty' ]
+		sheetRange = item[ 'Sheet' ] + qtyLeftCol + '%d' % item[ 'IdxInSheet' ]
 		for sheetInfo in sheets:
 			if sheetInfo[ 'brand' ] == item[ 'Brand' ]:
 				sheetId = sheetInfo[ 'id' ]
@@ -107,7 +130,7 @@ def writeBill( bill, customer ):
 		# Add the item price to the total bill
 		price = float( item[ 'Price' ] )
 		discount = price * ( int( item[ 'Discount' ].get() ) / 100 )
-		total += ( price - discount ) * qty
+		total += ( price - discount ) * item[ 'FinalQty' ]
 
 	# Add detailed rows to the bill sheet	
 	body = { 'values' : detailValues }
