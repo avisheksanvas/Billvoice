@@ -114,7 +114,8 @@ def writeBill( bill, customer ):
 						   item[ 'Brand' ],
 						   item[ 'Sheet' ],
 					 	   item[ 'Price' ],
-					 	   item[ 'Discount' ].get() ]
+					 	   item[ 'Discount' ].get(),
+						   item[ 'CostPrice' ] ]
 		detailValues.append( detailValueRow )
 
 		# Update the stock in the stock sheet
