@@ -65,11 +65,11 @@ There are a few things that will need to be setup to use this smoothly. Please f
 
 ### Google Sheets
 
-* Create a spreadsheet which has 2 sheets ( with names - BROAD and DETAIL ( exact ) ) with the columns as given below. Lets call the spreadsheet ad <billSheet>.
+* Create a spreadsheet which has 2 sheets ( with names - BROAD and DETAIL ( exact ) ) with the columns as given below. Lets call the spreadsheet ad **billSheet**.
 [![BillSheet1][billSheet1]]()
 [![BillSheet2][billSheet2]]()
 
-* Create spreadsheets per brand ( of products ) with each spreadhseet having different sheets for orders made over time as. Let's call the below spreadsheet <stockSheet1>.
+* Create spreadsheets per brand ( of products ) with each spreadhseet having different sheets for orders made over time as. Let's call the below spreadsheet **stockSheet1**.
 [![OrderSheet][orderSheet]]()
 
 
@@ -99,11 +99,11 @@ billSheetID = '<billSheetID>'
 sheets = []
 # orders should be equal to the number of ORDER sheets in each stock spreadsheet
 sheets.append( { 'brand' : 'MAHINDRA',
-				 'id' : '<stockSheet1ID>',
-				 'orders' : 3 } )
+                 'id' : '<stockSheet1ID>',
+                 'orders' : 3 } )
 sheets.append( { 'brand' : 'XYZ',
-				 'id' : '<stockSheet2ID>',
-				 'orders' : <noOfOrderSheetsForXYZ> } )
+                 'id' : '<stockSheet2ID>',
+                 'orders' : <noOfOrderSheetsForXYZ> } )
 ```
 
 
