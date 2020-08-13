@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+from tkinter import simpledialog 
 import pdb
 import googleData
 import datetime
@@ -37,29 +38,35 @@ def _search():
 
 def search():
 	options = _search()
-
-	if( len( options ) == 1 ):
-		item = options[ 0 ]
-		# Item Index in the Current Bill
-		item[ 'Idx' ] = len( items )
-		# Label to display
-		item[ 'LabelEl' ] = tk.Label( listFrame, text=item[ 'Text' ] )
-		item[ 'LabelEl' ].grid( row=item[ 'Idx' ] )
-		# Item Quantity selection box
-		item[ 'QtyBox' ] = tk.Spinbox( listFrame, from_=0, to=100 )
-		item[ 'QtyBox' ].grid( row=item[ 'Idx' ], column=1 )
-		item[ 'QtyBox' ].invoke( "buttonup" )
-		# Item Discount selection box
-		item[ 'DiscountBox' ] = tk.Spinbox( listFrame, from_=0, to=100 )
-		item[ 'DiscountBox' ].grid( row=item[ 'Idx' ], column=2 )
-		items.append( item )
-	elif ( len( options ) > 1 ):
-		#TODO give option to biller choose items.
-		pass
-	else:
+	
+	if( len( options ) == 0 ):	
 		display = 'Part Not Found'
 		result = 'Failure'
 		messagebox.showinfo( result, display )
+		return
+
+	if( len( options ) > 1 ):
+		optionsText = ""
+		for i, option in enumerate( options ):
+			optionsText += "%d) %s\n" % ( i, option[ 'Text' ] )
+		choice = simpledialog.askinteger( "Options", optionsText )
+		item = options[ choice ]
+	else:
+		item = options[ 0 ]
+	
+	# Item Index in the Current Bill
+	item[ 'Idx' ] = len( items )
+	# Label to display
+	item[ 'LabelEl' ] = tk.Label( listFrame, text=item[ 'Text' ] )
+	item[ 'LabelEl' ].grid( row=item[ 'Idx' ] )
+	# Item Quantity selection box
+	item[ 'QtyBox' ] = tk.Spinbox( listFrame, from_=0, to=100 )
+	item[ 'QtyBox' ].grid( row=item[ 'Idx' ], column=1 )
+	item[ 'QtyBox' ].invoke( "buttonup" )
+	# Item Discount selection box
+	item[ 'DiscountBox' ] = tk.Spinbox( listFrame, from_=0, to=100 )
+	item[ 'DiscountBox' ].grid( row=item[ 'Idx' ], column=2 )
+	items.append( item )
 
 def getTotal( finalItems ):
 	total = 0.0
@@ -96,7 +103,6 @@ def bill():
 			googleData.writeBill( bill )
 
 			# Open a sheet with bill that can be printed ( See what TODO )
-			# ????
 		else:
 			# Don't do anything, might want to edit the order
 			return
@@ -124,7 +130,7 @@ searchAreaHeight = 0.05
 listAreaHeight = 0.9
 billAreaHeight = 0.05
 # Canvas
-canvas = tk.Canvas( root, height=700, width=500, bg='#FFFFFF' )
+canvas = tk.Canvas( root, height=700, width=1200, bg='#FFFFFF' )
 canvas.pack() 
 # Search Frame
 searchFrame = tk.Frame( root, bg="#008000" )
