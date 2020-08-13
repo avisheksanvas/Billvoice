@@ -1,0 +1,3 @@
+import googleData
+
+googleData.getFrequentProducts()

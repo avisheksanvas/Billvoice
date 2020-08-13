@@ -3,31 +3,55 @@ from tkinter import ttk
 from tkinter import messagebox
 import pdb
 import googleData
+import datetime
 from scrollableFrame import ScrollableFrame
 
 items = []
+dfsPerBrand = googleData.loadData()
+
+def _search():
+	partNo = searchText.get( "1.0", "end" ).replace( '\n', '' )
+	options = []
+	for brand, dfs in dfsPerBrand.items():
+		for orderNo, df in enumerate( dfs ):
+			idxs = df.loc[ df['PartNo'] == partNo ].index.values.astype( int )
+			if( len( idxs ) > 0 ):
+				for idx in idxs:
+					idx = df.loc[ df['PartNo'] == partNo ].index.values.astype( int )[ 0 ]
+					qtyLeft = df.loc[ idx, 'QtyLeft' ]
+					if qtyLeft != '0':
+						option = {} 
+						option[ 'Brand' ] = brand
+						option[ 'Sheet' ] = 'ORDER%d!' % ( orderNo + 1 )
+						option[ 'IdxInSheet' ] = idx + 2
+						option[ 'PartNo' ] = partNo
+						option[ 'PartDesc' ] = df.loc[ idx, 'PartDesc' ]
+						option[ 'Price' ] = df.loc[ idx, 'Price' ]
+						option[ 'QtyLeft' ] = df.loc[ idx, 'QtyLeft' ]
+						option[ 'CostPrice' ] = df.loc[ idx, 'CostPrice' ]
+						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%s---Cost:%s' \
+							 				% ( option[ 'PartNo' ], option[ 'PartDesc' ], option[ 'Brand' ],
+								 			option[ 'Sheet' ], option[ 'Price' ], option[ 'CostPrice' ] )
+						options.append( option )
+	return options
 
 def search():
-	partNo = searchText.get( "1.0", "end" ).replace( '\n', '' )
-	options = googleData.search( partNo )
+	options = _search()
+
 	if( len( options ) == 1 ):
-		option = options[ 0 ]
-		item = {	'PartNo' : partNo,
-					'Desc' : option[ 'PartDesc' ],
-					'Brand' : option[ 'Brand' ],
-					'Sheet' : option[ 'Sheet' ],
-					'IdxInSheet' : option[ 'Idx' ] + 2, 
-					'Price' : option[ 'Price' ],
-					'CostPrice' : option[ 'CostPrice' ],
-					'QtyLeft' : option[ 'QtyLeft' ] }
+		item = options[ 0 ]
+		# Item Index in the Current Bill
 		item[ 'Idx' ] = len( items )
-		item[ 'LabelEl' ] = tk.Label( listFrame, text=item[ 'Desc' ] + '---Price: ' + item[ 'Price' ] + '---Cost: ' + item[ 'CostPrice' ] )
+		# Label to display
+		item[ 'LabelEl' ] = tk.Label( listFrame, text=item[ 'Text' ] )
 		item[ 'LabelEl' ].grid( row=item[ 'Idx' ] )
-		item[ 'Qty' ] = tk.Spinbox( listFrame, from_=0, to=100 )
-		item[ 'Qty' ].grid( row=item[ 'Idx' ], column=1 )
-		item[ 'Qty' ].invoke( "buttonup" )
-		item[ 'Discount' ] = tk.Spinbox( listFrame, from_=0, to=100 )
-		item[ 'Discount' ].grid( row=item[ 'Idx' ], column=2 )
+		# Item Quantity selection box
+		item[ 'QtyBox' ] = tk.Spinbox( listFrame, from_=0, to=100 )
+		item[ 'QtyBox' ].grid( row=item[ 'Idx' ], column=1 )
+		item[ 'QtyBox' ].invoke( "buttonup" )
+		# Item Discount selection box
+		item[ 'DiscountBox' ] = tk.Spinbox( listFrame, from_=0, to=100 )
+		item[ 'DiscountBox' ].grid( row=item[ 'Idx' ], column=2 )
 		items.append( item )
 	elif ( len( options ) > 1 ):
 		#TODO give option to biller choose items.
@@ -37,18 +61,53 @@ def search():
 		result = 'Failure'
 		messagebox.showinfo( result, display )
 
+def getTotal( finalItems ):
+	total = 0.0
+	for item in finalItems:
+		price = float( item[ 'Price' ] )
+		discount = price * ( int( item[ 'Discount' ] ) / 100 )
+		total += ( price - discount ) * item[ 'Qty' ]
+
+	return total
+		 
 def bill():
+	finalItems = []
+	billText = ""
+	for item in items:
+		item[ 'Qty' ]  = min( int( item[ 'QtyBox' ].get() ), int( item[ 'QtyLeft' ] ) )
+		item[ 'Discount' ] = item[ 'DiscountBox' ].get()
+		if item[ 'Qty' ] > 0:
+			item[ 'Text' ] = item[ 'Text' ] + '---Qty:%s---Dis:%s' % ( str( item[ 'Qty' ] ), item[ 'Discount' ] )
+			finalItems.append( item )
+			billText = billText + item[ 'Text' ] + "\n"
 	
-	# Write online to google sheets
-	customer = customerText.get( "1.0", "end" ).replace( '\n', '' )
-	googleData.writeBill( items, customer )
+	if len( finalItems ) > 0:
+		confirm = messagebox.askokcancel( "Confirm Bill", billText )
+		if confirm:
+			billDate = datetime.datetime.now()
+			billDate = billDate.strftime("%x")
+			bill = { 
+					'Id' : googleData.getMaxBillID() + 1,
+					'Customer' : customerText.get( "1.0", "end" ).replace( '\n', '' ),
+					'Date' : billDate,
+					'Items' : finalItems,
+					'Total' : getTotal( finalItems ),
+				   }
+			googleData.writeBill( bill )
 
-	# Open a sheet with bill that can be printed ( See what TODO )
-	# ????
+			# Open a sheet with bill that can be printed ( See what TODO )
+			# ????
+		else:
+			# Don't do anything, might want to edit the order
+			return
+	else:
+		messagebox.showinfo( "Not Available", "Please select some availabe items" )	
 
-
+	# Load the data from the sheets again for safety
+	global dfsPerBrand
+	dfsPerBrand = googleData.loadData()
 	# Clear local state
-	clear()	
+	clear()
 
 def clear():
 	global listFrameTop, listFrame
