@@ -2,3 +2,4 @@ credentials.json
 token.pickle
 __pycache__
 sheetData.py
+toInstall.txt
