@@ -110,8 +110,8 @@ def getFrequentProducts():
 	result_input = sheet.values().get( spreadsheetId=billSheetID, range=sheetRange ).execute()
 	values_input = result_input.get( 'values', [])
 	df = pd.DataFrame( values_input[1:], columns=values_input[0] )
-	df[ 'QUANTITY' ] = df[ 'QUANTITY' ].astype( int )
-	df1 = df.groupby('PART NO')[ 'QUANTITY' ].sum()
+	df[ 'Qty' ] = df[ 'Qty' ].astype( int )
+	df1 = df.groupby('PartNo')[ 'Qty' ].sum()
 	df1 = df1.sort_values( ascending=False )
 	partNos = []
 	qtys = []
