@@ -167,7 +167,7 @@ Your Name - [@avisheksanvas](https://twitter.com/avisheksanvas)
 [license-url]: https://github.com/avisheksanvas/Billvoice/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/avishek-santhaliya
-[product-screenshot]: images/productScreenshot.png
+[productScreenshot]: images/productScreenshot.png
 [billSheet1]: images/billSheet1.png
 [billSheet2]: images/billSheet2.png
 [orderSheet]: images/orderSheet.png
