@@ -17,6 +17,7 @@
 
   <p align="center">
 	An open source solution to all your inventory management and billing problems.
+	Apart from that, a few DATA SCIENCE hacks to enhance your business.
   </p>
 </p>
 
@@ -56,6 +57,8 @@ A list of commonly used resources that I find helpful are listed in the acknowle
 ### Built With
 * [Python](https://www.python.org/)
 * [Tkinter](https://docs.python.org/3/library/tkinter.html)
+* [Matplotlib](https://matplotlib.org/)
+* [Pandas](https://pandas.pydata.org/)
 
 
 
