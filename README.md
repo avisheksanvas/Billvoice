@@ -13,10 +13,10 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Best-README-Template</h3>
+  <h3 align="center">Bill-Voice</h3>
 
   <p align="center">
-    An awesome README template to jumpstart your projects!
+	An open source solution to all your inventory management and billing problems.
   </p>
 </p>
 
@@ -54,7 +54,6 @@ Of course, no one template will serve all projects since your needs may be diffe
 A list of commonly used resources that I find helpful are listed in the acknowledgements.
 
 ### Built With
-This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 * [Python](https://www.python.org/)
 * [Tkinter](https://docs.python.org/3/library/tkinter.html)
 
@@ -91,7 +90,6 @@ const API_KEY = 'ENTER YOUR API';
 
 
 
-<!-- USAGE EXAMPLES -->
 ## Usage
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
@@ -99,14 +97,12 @@ Use this space to show useful examples of how a project can be used. Additional 
 
 
 
-<!-- ROADMAP -->
 ## Roadmap
 
 See the [open issues](https://github.com/avisheksanvas/Billvoice/issues) for a list of proposed features (and known issues).
 
 
 
-<!-- CONTRIBUTING -->
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -119,14 +115,12 @@ Contributions are what make the open source community such an amazing place to b
 
 
 
-<!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
 
 
-<!-- CONTACT -->
 ## Contact
 
 Your Name - [@avisheksanvas](https://twitter.com/avisheksanvas)
