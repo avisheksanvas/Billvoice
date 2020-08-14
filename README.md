@@ -41,7 +41,8 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][productScreenshot]]()
+[![Product Name Screen Shot1][productScreenshot1]]()
+[![Product Name Screen Shot2][productScreenshot2]]()
 
 This project is mainly built to help small and medium sized businesses maintain their stocks and create bills with a database based on Google Sheets. Aloing with that, it has a few other scripts that can help visualise potential orders to make that can increase profit, customers to look out for and more.
 
@@ -65,13 +66,15 @@ There are a few things that will need to be setup to use this smoothly. Please f
 
 ### Google Sheets
 
-* Create a spreadsheet which has 2 sheets ( with names - BROAD and DETAIL ( exact ) ) with the columns as given below. Lets call the spreadsheet ad **billSheet**.
+* Create a spreadsheet which has 2 sheets ( with names - DETAIL and BROAD ( exact ) ) with the columns as given below. Lets call the spreadsheet ad **billSheet**.
 [![BillSheet1][billSheet1]]()
 [![BillSheet2][billSheet2]]()
 
 * Create spreadsheets per brand ( of products ) with each spreadhseet having different sheets for orders made over time as. Let's call the below spreadsheet **stockSheet1**.
 [![OrderSheet][orderSheet]]()
 
+* Create a spreadsheet as below that will be used to track items that were not in stock but customer came to look for it.
+[![ExtraSheet][extraSheet]]()
 
 
 ### Installation
@@ -181,7 +184,9 @@ Your Name - [@avisheksanvas](https://twitter.com/avisheksanvas)
 [license-url]: https://github.com/avisheksanvas/Billvoice/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/avishek-santhaliya
-[productScreenshot]: images/productScreenshot.png
+[productScreenshot1]: images/productScreenshot1.png
+[productScreenshot2]: images/productScreenshot2.png
 [billSheet1]: images/billSheet1.png
 [billSheet2]: images/billSheet2.png
 [orderSheet]: images/orderSheet.png
+[extraSheet]: images/extraSheet.png
