@@ -146,8 +146,10 @@ customerTextWidth = 0.4
 searchButtonWidth = 1 - searchTextWidth - customerTextWidth 
 searchText = tk.Text( searchFrame )
 searchText.place( relheight=1, relwidth=searchTextWidth )
-customerText = tk.Text( searchFrame )
+searchText.insert( tk.END, "ItemNo...")
+customerText = tk.Text( searchFrame, bg="#b3ffff")
 customerText.place( relx=searchTextWidth, relheight=1, relwidth=customerTextWidth )
+customerText.insert( tk.END, "Customer...")
 searchButton = ttk.Button( searchFrame, text="Search", command=search )
 searchButton.place( relx=1-searchButtonWidth, relheight=1, relwidth=searchButtonWidth )
 # List Frame
