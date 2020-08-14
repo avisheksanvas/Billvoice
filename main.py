@@ -11,27 +11,27 @@ items = []
 dfsPerBrand = googleData.loadData()
 
 def _search():
-	partNo = searchText.get( "1.0", "end" ).replace( '\n', '' )
+	itemNo = searchText.get( "1.0", "end" ).replace( '\n', '' )
 	options = []
 	for brand, dfs in dfsPerBrand.items():
 		for orderNo, df in enumerate( dfs ):
-			idxs = df.loc[ df['PartNo'] == partNo ].index.values.astype( int )
+			idxs = df.loc[ df['ItemNo'] == itemNo ].index.values.astype( int )
 			if( len( idxs ) > 0 ):
 				for idx in idxs:
-					idx = df.loc[ df['PartNo'] == partNo ].index.values.astype( int )[ 0 ]
+					idx = df.loc[ df['ItemNo'] == itemNo ].index.values.astype( int )[ 0 ]
 					qtyLeft = df.loc[ idx, 'QtyLeft' ]
 					if qtyLeft != '0':
 						option = {} 
 						option[ 'Brand' ] = brand
 						option[ 'Sheet' ] = 'ORDER%d!' % ( orderNo + 1 )
 						option[ 'IdxInSheet' ] = idx + 2
-						option[ 'PartNo' ] = partNo
-						option[ 'PartDesc' ] = df.loc[ idx, 'PartDesc' ]
+						option[ 'ItemNo' ] = itemNo
+						option[ 'ItemDesc' ] = df.loc[ idx, 'ItemDesc' ]
 						option[ 'Price' ] = df.loc[ idx, 'Price' ]
 						option[ 'QtyLeft' ] = df.loc[ idx, 'QtyLeft' ]
 						option[ 'CostPrice' ] = df.loc[ idx, 'CostPrice' ]
 						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%s---Cost:%s' \
-							 				% ( option[ 'PartNo' ], option[ 'PartDesc' ], option[ 'Brand' ],
+							 				% ( option[ 'ItemNo' ], option[ 'ItemDesc' ], option[ 'Brand' ],
 								 			option[ 'Sheet' ], option[ 'Price' ], option[ 'CostPrice' ] )
 						options.append( option )
 	return options
@@ -44,7 +44,7 @@ def search():
 		notFoundItem.append( searchText.get( "1.0", "end" ).replace( '\n', '' ) )
 		notFoundItem.append( getDate() )
 		googleData.writeNotFoundItem( notFoundItem )
-		display = 'Part Not Found'
+		display = 'Item Not In Stock'
 		result = 'Failure'
 		messagebox.showinfo( result, display )
 		return

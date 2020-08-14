@@ -75,7 +75,7 @@ def writeBill( bill ):
 	for item in bill[ 'Items' ]:
 		# Create detailed row to add in the bill sheet
 		detailValueRow = [ str( bill[ 'Id' ] ),
-					 	   item[ 'PartNo' ],
+					 	   item[ 'ItemNo' ],
 					 	   item[ 'Qty' ],
 						   item[ 'Brand' ],
 						   item[ 'Sheet' ],
@@ -118,13 +118,13 @@ def getFrequentProducts():
 	values_input = result_input.get( 'values', [])
 	df = pd.DataFrame( values_input[1:], columns=values_input[0] )
 	df[ 'Qty' ] = df[ 'Qty' ].astype( int )
-	df1 = df.groupby('PartNo')[ 'Qty' ].sum()
+	df1 = df.groupby('ItemNo')[ 'Qty' ].sum()
 	df1 = df1.sort_values( ascending=False )
-	partNos = []
+	itemNos = []
 	qtys = []
 	i = 0
-	for partNo, qty in df1.items():
-		partNos.append( partNo )
+	for itemNo, qty in df1.items():
+		itemNos.append( itemNo )
 		qtys.append( qty )
 		i += 1
 		if i == 10:
@@ -133,8 +133,8 @@ def getFrequentProducts():
 	# Plot a bar graph
 	fig = plt.figure()
 	ax = fig.add_axes([0.2,0.2,0.7,0.7])
-	ax.bar(partNos,qtys)
-	plt.xlabel("Part Number")
+	ax.bar(itemNos,qtys)
+	plt.xlabel("Item Number")
 	plt.ylabel("Quantity")
 	plt.show()
 	pdb.set_trace()
