@@ -9,6 +9,7 @@ from google.auth.transport.requests import Request
 import matplotlib.pyplot as plt
 
 billSheetID = sheetData.billSheetID
+extraSheetID = sheetData.extraSheetID
 sheets = sheetData.sheets
 qtyLeftCol = 'F'
 
@@ -61,6 +62,12 @@ def getMaxBillID():
 	else:
 		return 0
 
+def writeNotFoundItem( notFoundItem ):
+	sheet = service.spreadsheets()
+	body = { 'values' : [ notFoundItem ] }
+	sheetRange = 'NOTFOUND!A1:B89100'
+	sheet.values().append( spreadsheetId=extraSheetID, valueInputOption='RAW', range=sheetRange, body=body ).execute()
+	 
 def writeBill( bill ):
 	sheet = service.spreadsheets()
 	detailValues = []

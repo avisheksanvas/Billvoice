@@ -39,7 +39,11 @@ def _search():
 def search():
 	options = _search()
 	
-	if( len( options ) == 0 ):	
+	if( len( options ) == 0 ):
+		notFoundItem = []
+		notFoundItem.append( searchText.get( "1.0", "end" ).replace( '\n', '' ) )
+		notFoundItem.append( getDate() )
+		googleData.writeNotFoundItem( notFoundItem )
 		display = 'Part Not Found'
 		result = 'Failure'
 		messagebox.showinfo( result, display )
@@ -76,7 +80,11 @@ def getTotal( finalItems ):
 		total += ( price - discount ) * item[ 'Qty' ]
 
 	return total
-		 
+
+def getDate():
+	currentDate = datetime.datetime.now()
+	return currentDate.strftime("%x")
+	 
 def bill():
 	finalItems = []
 	billText = ""
@@ -91,12 +99,10 @@ def bill():
 	if len( finalItems ) > 0:
 		confirm = messagebox.askokcancel( "Confirm Bill", billText )
 		if confirm:
-			billDate = datetime.datetime.now()
-			billDate = billDate.strftime("%x")
 			bill = { 
 					'Id' : googleData.getMaxBillID() + 1,
 					'Customer' : customerText.get( "1.0", "end" ).replace( '\n', '' ),
-					'Date' : billDate,
+					'Date' : getDate(),
 					'Items' : finalItems,
 					'Total' : getTotal( finalItems ),
 				   }
