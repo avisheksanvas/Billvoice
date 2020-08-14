@@ -28,12 +28,15 @@
 * [About the Project](#about-the-project)
   * [Built With](#built-with)
 * [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
+  * [Google Sheets](#google-sheets)
   * [Installation](#installation)
+  * [Files to create](#files-to-create)
 * [Usage](#usage)
+* [Data Science Involvement](#data-science-involvement)
+  * [Potential Next Order](#potential-next-order)
+  * [Beneficial Customers](#beneficial-customers)
 * [Roadmap](#roadmap)
 * [Contributing](#contributing)
-* [License](#license)
 * [Contact](#contact)
 * [Acknowledgements](#acknowledgements)
 
@@ -94,7 +97,7 @@ and so on for other packages you get an error for...
 ```
 
 
-### Files to create in local git directory
+### Files to create
 
 **Make sure to place these files directly in the local directory that was created when you cloned**
 
@@ -136,11 +139,11 @@ python dataVisual.py
 ```
 
 
-## How is Data Science involved?
+## Data Science Involvement 
 
-### Create next order to make
+### Potential Next Order
 
-### Create list of customers to look out for
+### Beneficial Customers
 
 ## Roadmap
 
