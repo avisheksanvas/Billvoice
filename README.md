@@ -66,39 +66,53 @@ There are a few things that will need to be setup to use this smoothly. Please f
 
 ### Google Sheets
 
-* Create a spreadsheet which has 2 sheets ( with names - DETAIL and BROAD ( exact ) ) with the columns as given below. Lets call the spreadsheet ad **billSheet**.
+* Create a spreadsheet which has 2 sheets ( with names - DETAIL and BROAD ( exact ) ) with the columns as given below. Lets call the spreadsheet **billSheet**.
 [![BillSheet1][billSheet1]]()
 [![BillSheet2][billSheet2]]()
 
-* Create spreadsheets per brand ( of products ) with each spreadhseet having different sheets for orders made over time as. Let's call the below spreadsheet **stockSheet1**.
+* Create spreadsheets per brand ( of products ) with each spreadhseet having different sheets for orders made over time as. Lets call the below spreadsheet **stockSheet1**.
 [![OrderSheet][orderSheet]]()
 
-* Create a spreadsheet as below that will be used to track items that were not in stock but customer came to look for it.
+* Create a spreadsheet as below that will be used to track items that were not in stock but customer came to look for it. Lets call this spreadsheet **extraSheet**.
 [![ExtraSheet][extraSheet]]()
 
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
 ```sh
 git clone https://github.com/avisheksanvas/Billvoice.git
 ```
 3. Install required packages in the local git directory
 ```sh
 pip install tkinter
+pip install google_spreadsheet
+pip install google-auth-oauthlib
+pip install pandas
+pip install matplotlib
+and so on for other packages you get an error for...
 ```
 
 
 ### Files to create in local git directory
 
+**Make sure to place these files directly in the local directory that was created when you cloned**
+
+
 * credentials.json
-Add how to create credentials
+See **Step 1** of [Google Tutorial](https://developers.google.com/sheets/api/quickstart/python) to get the credentials.json file and and enable google sheets API.
 * sheetData.py should be:
 ```python
+# Say the sharing link to you spreadsheet is:
+# https://docs.google.com/spreadsheets/d/<ID>/edit?usp=sharing
+# Then ID is the spreadsheet ID
+
+
 # billSheetID = ID of billSheet ( that we created above )
+# extraSheetID = ID of extraSheet ( that we created above )
 # stockSheet1ID = ID of stockSheet1 ( that we created above )
 billSheetID = '<billSheetID>'
+extraSheetID = '<extraSheetID>'
 sheets = []
 # orders should be equal to the number of ORDER sheets in each stock spreadsheet
 sheets.append( { 'brand' : 'MAHINDRA',
@@ -122,7 +136,11 @@ python dataVisual.py
 ```
 
 
+## How is Data Science involved?
 
+### Create next order to make
+
+### Create list of customers to look out for
 
 ## Roadmap
 
@@ -156,17 +174,8 @@ Your Name - [@avisheksanvas](https://twitter.com/avisheksanvas)
 
 
 ## Acknowledgements
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Img Shields](https://shields.io)
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Pages](https://pages.github.com)
-* [Animate.css](https://daneden.github.io/animate.css)
-* [Loaders.css](https://connoratherton.com/loaders)
-* [Slick Carousel](https://kenwheeler.github.io/slick)
-* [Smooth Scroll](https://github.com/cferdinandi/smooth-scroll)
-* [Sticky Kit](http://leafo.net/sticky-kit)
-* [JVectorMap](http://jvectormap.com)
-* [Font Awesome](https://fontawesome.com)
+* [Medium Blog For Google Sheet Iteraction](https://medium.com/analytics-vidhya/how-to-read-and-write-data-to-google-spreadsheet-using-python-ebf54d51a72c)
+* [Google Sheets Docs](https://developers.google.com/sheets/api/guides/values)
 
 
 

@@ -137,6 +137,5 @@ def getFrequentProducts():
 	plt.xlabel("Item Number")
 	plt.ylabel("Quantity")
 	plt.show()
-	pdb.set_trace()
 		
 authenticate()
