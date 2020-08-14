@@ -99,9 +99,9 @@ and so on for other packages you get an error for...
 **Make sure to place these files directly in the local directory that was created when you cloned**
 
 
-* credentials.json
+* credentials.json<br>
 See **Step 1** of [Google Tutorial](https://developers.google.com/sheets/api/quickstart/python) to get the credentials.json file and and enable google sheets API.
-* sheetData.py should be:
+* Create **sheetData.py** as:
 ```python
 # Say the sharing link to you spreadsheet is:
 # https://docs.google.com/spreadsheets/d/<ID>/edit?usp=sharing
@@ -160,15 +160,9 @@ Contributions are what make the open source community such an amazing place to b
 
 
 
-## License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-
-
 ## Contact
 
-Your Name - [@avisheksanvas](https://twitter.com/avisheksanvas)
+[@avisheksanvas](https://twitter.com/avisheksanvas)
 
 
 
