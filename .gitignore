@@ -3,3 +3,4 @@ token.pickle
 __pycache__
 sheetData.py
 toInstall.txt
+.DS_Store
