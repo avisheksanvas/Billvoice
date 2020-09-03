@@ -75,17 +75,19 @@ def writeBill( bill ):
 	for item in bill[ 'Items' ]:
 		# Create detailed row to add in the bill sheet
 		detailValueRow = [ str( bill[ 'Id' ] ),
-					 	   item[ 'ItemNo' ],
-					 	   item[ 'Qty' ],
 						   item[ 'Brand' ],
 						   item[ 'Sheet' ],
-					 	   item[ 'Price' ],
+						   int( item[ 'IdxInSheet' ] ),
+					 	   item[ 'ItemNo' ],
+					 	   item[ 'Qty' ],
 					 	   item[ 'Discount' ],
+						   item[ 'ItemDesc' ],
+						   item[ 'Price' ],
 						   item[ 'CostPrice' ] ]
 		detailValues.append( detailValueRow )
 
 		# Update the stock in the stock sheet
-		qtyLeft = int( item[ 'QtyLeft' ] ) - item[ 'Qty' ]
+		qtyLeft = float( item[ 'QtyLeft' ] ) - item[ 'Qty' ]
 		sheetRange = item[ 'Sheet' ] + qtyLeftCol + '%d' % item[ 'IdxInSheet' ]
 		for sheetInfo in sheets:
 			if sheetInfo[ 'brand' ] == item[ 'Brand' ]:
@@ -96,7 +98,7 @@ def writeBill( bill ):
 		
 	# Add detailed rows to the bill sheet	
 	body = { 'values' : detailValues }
-	sheetRange = 'DETAIL!A1:G89100'
+	sheetRange = 'DETAIL!A1:J89100'
 	result_output = sheet.values().append( spreadsheetId=billSheetID, valueInputOption='RAW', range=sheetRange, body=body ).execute()
 
 	# Create a per bill row to add to the bill sheet	

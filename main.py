@@ -89,7 +89,7 @@ def bill():
 	finalItems = []
 	billText = ""
 	for item in items:
-		item[ 'Qty' ]  = min( int( item[ 'QtyBox' ].get() ), int( item[ 'QtyLeft' ] ) )
+		item[ 'Qty' ]  = min( int( item[ 'QtyBox' ].get() ), float( item[ 'QtyLeft' ] ) )
 		item[ 'Discount' ] = item[ 'DiscountBox' ].get()
 		if item[ 'Qty' ] > 0:
 			item[ 'Text' ] = item[ 'Text' ] + '---Qty:%s---Dis:%s' % ( str( item[ 'Qty' ] ), item[ 'Discount' ] )
