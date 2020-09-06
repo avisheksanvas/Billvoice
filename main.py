@@ -30,9 +30,12 @@ def _search():
 						option[ 'Price' ] = df.loc[ idx, 'Price' ]
 						option[ 'QtyLeft' ] = df.loc[ idx, 'QtyLeft' ]
 						option[ 'CostPrice' ] = df.loc[ idx, 'CostPrice' ]
-						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%s---Cost:%s' \
+						sellingPrice = float( option[ 'Price' ] )
+						costPrice = float( option[ 'CostPrice' ] )
+						maxDiscount = ( ( sellingPrice - costPrice ) / sellingPrice ) * 100.0
+						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%s---MaxDiscount:%s' \
 							 				% ( option[ 'ItemNo' ], option[ 'ItemDesc' ], option[ 'Brand' ],
-								 			option[ 'Sheet' ], option[ 'Price' ], option[ 'CostPrice' ] )
+								 			option[ 'Sheet' ], option[ 'Price' ], str( maxDiscount ) )
 						options.append( option )
 	return options
 
