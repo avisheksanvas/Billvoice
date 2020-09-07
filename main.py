@@ -30,12 +30,14 @@ def _search():
 						option[ 'Price' ] = df.loc[ idx, 'Price' ]
 						option[ 'QtyLeft' ] = df.loc[ idx, 'QtyLeft' ]
 						option[ 'CostPrice' ] = df.loc[ idx, 'CostPrice' ]
+						option[ 'NepaliPrice' ] = df.loc[ idx, 'NepaliPrice' ]
 						sellingPrice = float( option[ 'Price' ] )
 						costPrice = float( option[ 'CostPrice' ] )
 						maxDiscount = ( ( sellingPrice - costPrice ) / sellingPrice ) * 100.0
-						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%s---MaxDiscount:%s' \
+						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%s---NepaliPrice:%s---MaxDiscount:%s' \
 							 				% ( option[ 'ItemNo' ], option[ 'ItemDesc' ], option[ 'Brand' ],
-								 			option[ 'Sheet' ], option[ 'Price' ], str( maxDiscount ) )
+								 			option[ 'Sheet' ], option[ 'Price' ], option[ 'NepaliPrice' ], str( maxDiscount ) )
+						option[ 'ReadableText' ] = '%s---%s' % ( option[ 'ItemNo' ], option[ 'ItemDesc' ] )
 						options.append( option )
 	return options
 
@@ -70,36 +72,44 @@ def search():
 	item[ 'QtyBox' ] = tk.Spinbox( listFrame, from_=0, to=100 )
 	item[ 'QtyBox' ].grid( row=item[ 'Idx' ], column=1 )
 	item[ 'QtyBox' ].invoke( "buttonup" )
-	# Item Discount selection box
-	item[ 'DiscountBox' ] = tk.Spinbox( listFrame, from_=0, to=100 )
-	item[ 'DiscountBox' ].grid( row=item[ 'Idx' ], column=2 )
+	# Item Price Box
+	item[ 'SellingPriceBox' ] = tk.Entry( listFrame, width=20 )
+	item[ 'SellingPriceBox' ].grid( row=item[ 'Idx' ], column=3 )
 	items.append( item )
 
 def getTotal( finalItems ):
 	total = 0.0
 	for item in finalItems:
-		price = float( item[ 'Price' ] )
-		discount = price * ( int( item[ 'Discount' ] ) / 100 )
-		total += ( price - discount ) * item[ 'Qty' ]
+		total += float( item[ 'SellingPrice' ] ) * item[ 'Qty' ]
 
 	return total
 
 def getDate():
 	currentDate = datetime.datetime.now()
 	return currentDate.strftime("%x")
+	
+def isItemsPriceCorrect( finalItems ):
+	for item in finalItems:
+		try:
+			float( item[ 'SellingPrice' ] )
+		except ValueError:
+			return False
+	return True
 	 
 def bill():
 	finalItems = []
 	billText = ""
 	for item in items:
 		item[ 'Qty' ]  = min( int( item[ 'QtyBox' ].get() ), float( item[ 'QtyLeft' ] ) )
-		item[ 'Discount' ] = item[ 'DiscountBox' ].get()
+		item[ 'SellingPrice' ] = item[ 'SellingPriceBox' ].get()
 		if item[ 'Qty' ] > 0:
-			item[ 'Text' ] = item[ 'Text' ] + '---Qty:%s---Dis:%s' % ( str( item[ 'Qty' ] ), item[ 'Discount' ] )
 			finalItems.append( item )
-			billText = billText + item[ 'Text' ] + "\n"
-	
+			billText = billText + ( item[ 'ReadableText' ] + '---Qty:%s---SellingPrice:%s' % ( str( item[ 'Qty' ] ), item[ 'SellingPrice' ] ) ) + "\n"
+
 	if len( finalItems ) > 0:
+		if not isItemsPriceCorrect( finalItems ):
+			messagebox.showinfo( "Wrong Prices", "Please enter correct prices for items" )
+			return
 		confirm = messagebox.askokcancel( "Confirm Bill", billText )
 		if confirm:
 			bill = { 

@@ -12,6 +12,8 @@ billSheetID = sheetData.billSheetID
 extraSheetID = sheetData.extraSheetID
 sheets = sheetData.sheets
 qtyLeftCol = 'F'
+lastColInStockSheet = 'H'
+lastColInDetailBillSheet = 'I'
 
 def authenticate():
 	SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
@@ -38,7 +40,7 @@ def loadData():
 		# Different orders placed for different brands level
 		dfsPerBrand[ sheetInfo[ 'brand' ] ] = []
 		for order in range( sheetInfo[ 'orders' ] ):
-			sheetRange = 'ORDER%d!A1:G50000' % ( order + 1 )
+			sheetRange = 'ORDER%d!A1:' %( order + 1 ) + lastColInStockSheet + '50000'
 			sheet = service.spreadsheets()
 			result_input = sheet.values().get( spreadsheetId=sheetInfo[ 'id' ], range=sheetRange ).execute()
 			values_input = result_input.get( 'values', [])
@@ -80,9 +82,8 @@ def writeBill( bill ):
 						   int( item[ 'IdxInSheet' ] ),
 					 	   item[ 'ItemNo' ],
 					 	   item[ 'Qty' ],
-					 	   item[ 'Discount' ],
+					 	   item[ 'SellingPrice' ],
 						   item[ 'ItemDesc' ],
-						   item[ 'Price' ],
 						   item[ 'CostPrice' ] ]
 		detailValues.append( detailValueRow )
 
@@ -98,7 +99,7 @@ def writeBill( bill ):
 		
 	# Add detailed rows to the bill sheet	
 	body = { 'values' : detailValues }
-	sheetRange = 'DETAIL!A1:J89100'
+	sheetRange = 'DETAIL!A1:' + lastColInDetailBillSheet + '89100'
 	result_output = sheet.values().append( spreadsheetId=billSheetID, valueInputOption='RAW', range=sheetRange, body=body ).execute()
 
 	# Create a per bill row to add to the bill sheet	
