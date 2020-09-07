@@ -32,8 +32,9 @@ def _search():
 						option[ 'CostPrice' ] = df.loc[ idx, 'CostPrice' ]
 						option[ 'NepaliPrice' ] = df.loc[ idx, 'NepaliPrice' ]
 						sellingPrice = float( option[ 'Price' ] )
-						costPrice = float( option[ 'CostPrice' ] )
-						maxDiscount = ( ( sellingPrice - costPrice ) / sellingPrice ) * 100.0
+						# We need at least 20% profit on the costing, so:
+						minPriceToSell = float( option[ 'CostPrice' ] ) * 1.2
+						maxDiscount = ( ( sellingPrice - minPriceToSell ) / sellingPrice ) * 100.0
 						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%s---NepaliPrice:%s---MaxDiscount:%s' \
 							 				% ( option[ 'ItemNo' ], option[ 'ItemDesc' ], option[ 'Brand' ],
 								 			option[ 'Sheet' ], option[ 'Price' ], option[ 'NepaliPrice' ], str( maxDiscount ) )
