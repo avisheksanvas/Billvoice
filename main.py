@@ -11,15 +11,25 @@ from scrollableFrame import ScrollableFrame
 items = []
 dfsPerBrand = googleData.loadData()
 
+def getNepaliPrice( nepaliPrice ):
+	try:
+		float( nepaliPrice )
+		return math.ceil( float( nepaliPrice ) )
+	except ValueError:
+		return 0
+
 def _search():
 	itemNo = searchText.get( "1.0", "end" ).replace( '\n', '' )
+	itemNo = itemNo.upper()
 	options = []
 	for brand, dfs in dfsPerBrand.items():
 		for orderNo, df in enumerate( dfs ):
 			idxs = df.loc[ df['ItemNo'] == itemNo ].index.values.astype( int )
+			# If nothing found by ItemNo, try to take it as a name
+			if len( idxs ) <= 0:
+				idxs = df.loc[ df['ItemDesc'].str.contains( itemNo ) ].index.values.astype( int )
 			if( len( idxs ) > 0 ):
 				for idx in idxs:
-					idx = df.loc[ df['ItemNo'] == itemNo ].index.values.astype( int )[ 0 ]
 					qtyLeft = df.loc[ idx, 'QtyLeft' ]
 					if qtyLeft != '0':
 						option = {} 
@@ -33,7 +43,7 @@ def _search():
 						option[ 'CostPrice' ] = df.loc[ idx, 'CostPrice' ]
 						option[ 'NepaliPrice' ] = df.loc[ idx, 'NepaliPrice' ]
 						setPrice = math.ceil( float( option[ 'Price' ] ) )
-						nepaliPrice = math.ceil( float( option[ 'NepaliPrice' ] ) )
+						nepaliPrice = getNepaliPrice( option[ 'NepaliPrice' ] )
 						# We need at least 20% profit on the costing, so:
 						minPriceToSell = math.ceil( float( option[ 'CostPrice' ] ) * 1.2 )
 						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%d---NepaliPrice:%d---Min:%d' \
@@ -47,14 +57,16 @@ def search():
 	options = _search()
 	
 	if( len( options ) == 0 ):
-		notFoundDesc = simpledialog.askstring( "Item not in stock", "Please enter descriotion?",
-											   initialvalue="Customer request" )
+		notFoundDesc = ''
 		while not notFoundDesc:
-			# Pressed cancel or empty string
+			# Entering empty string
 			notFoundDesc = simpledialog.askstring( "Item not in stock", "Please enter descriotion?",
 											   	   initialvalue="Customer request" )
+			# Pressed cancel
+			if notFoundDesc is None:
+				return
 		notFoundItem = []
-		notFoundItem.append( searchText.get( "1.0", "end" ).replace( '\n', '' ) )
+		notFoundItem.append( searchText.get( "1.0", "end" ).replace( '\n', '' ).upper() )
 		notFoundItem.append( getDate() )
 		notFoundItem.append( notFoundDesc )
 		googleData.writeNotFoundItem( notFoundItem )
@@ -64,10 +76,12 @@ def search():
 		optionsText = ""
 		for i, option in enumerate( options ):
 			optionsText += "%d) %s\n" % ( i+1, option[ 'Text' ] )
-		choice = simpledialog.askinteger( "Options", optionsText )
+		choice = 0
 		while ( not choice ) or ( choice > len( options ) ):
-			# Pressed cancel or wrong choice
+			# Pressed wrong choice
 			choice = simpledialog.askinteger( "Options", optionsText )
+			if choice is None:
+				return
 		item = options[ choice-1 ]
 	else:
 		item = options[ 0 ]
@@ -130,6 +144,7 @@ def bill():
 					'Total' : getTotal( finalItems ),
 				   }
 			googleData.writeBill( bill )
+			messagebox.showinfo( "Success", "Stock and billing successfully done" )	
 
 			# Open a sheet with bill that can be printed ( See what TODO )
 		else:
