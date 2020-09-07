@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import simpledialog 
+import math
 import pdb
 import googleData
 import datetime
@@ -31,13 +32,13 @@ def _search():
 						option[ 'QtyLeft' ] = df.loc[ idx, 'QtyLeft' ]
 						option[ 'CostPrice' ] = df.loc[ idx, 'CostPrice' ]
 						option[ 'NepaliPrice' ] = df.loc[ idx, 'NepaliPrice' ]
-						sellingPrice = float( option[ 'Price' ] )
+						setPrice = math.ceil( float( option[ 'Price' ] ) )
+						nepaliPrice = math.ceil( float( option[ 'NepaliPrice' ] ) )
 						# We need at least 20% profit on the costing, so:
-						minPriceToSell = float( option[ 'CostPrice' ] ) * 1.2
-						maxDiscount = ( ( sellingPrice - minPriceToSell ) / sellingPrice ) * 100.0
-						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%s---NepaliPrice:%s---MaxDiscount:%s' \
+						minPriceToSell = math.ceil( float( option[ 'CostPrice' ] ) * 1.2 )
+						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%d---NepaliPrice:%d---Min:%d' \
 							 				% ( option[ 'ItemNo' ], option[ 'ItemDesc' ], option[ 'Brand' ],
-								 			option[ 'Sheet' ], option[ 'Price' ], option[ 'NepaliPrice' ], str( maxDiscount ) )
+								 			option[ 'Sheet' ], setPrice, nepaliPrice, minPriceToSell )
 						option[ 'ReadableText' ] = '%s---%s' % ( option[ 'ItemNo' ], option[ 'ItemDesc' ] )
 						options.append( option )
 	return options

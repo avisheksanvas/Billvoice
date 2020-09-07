@@ -13,7 +13,13 @@ extraSheetID = sheetData.extraSheetID
 sheets = sheetData.sheets
 qtyLeftCol = 'F'
 lastColInStockSheet = 'H'
+maxRowsInStockSheet = '50000'
 lastColInDetailBillSheet = 'I'
+maxRowsInDetailBillSheet = '89100'
+lastColInBroadBillSheet = 'D'
+maxRowsInBroadBillSheet = '89100'
+lastColInExtraSheet = 'B'
+maxRowsInExtraSheet = '89100'
 
 def authenticate():
 	SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
@@ -40,7 +46,7 @@ def loadData():
 		# Different orders placed for different brands level
 		dfsPerBrand[ sheetInfo[ 'brand' ] ] = []
 		for order in range( sheetInfo[ 'orders' ] ):
-			sheetRange = 'ORDER%d!A1:' %( order + 1 ) + lastColInStockSheet + '50000'
+			sheetRange = 'ORDER%d!A1:' %( order + 1 ) + lastColInStockSheet + maxRowsInStockSheet
 			sheet = service.spreadsheets()
 			result_input = sheet.values().get( spreadsheetId=sheetInfo[ 'id' ], range=sheetRange ).execute()
 			values_input = result_input.get( 'values', [])
@@ -52,7 +58,7 @@ def loadData():
 	return dfsPerBrand
 	
 def getMaxBillID():
-	sheetRange = 'BROAD!A2:D89100'
+	sheetRange = 'BROAD!A2:' + lastColInBroadBillSheet + maxRowsInBroadBillSheet
 	sheet = service.spreadsheets()
 	result_input = sheet.values().get( spreadsheetId=billSheetID, range=sheetRange ).execute()
 	values_input = result_input.get( 'values', [])
@@ -67,7 +73,7 @@ def getMaxBillID():
 def writeNotFoundItem( notFoundItem ):
 	sheet = service.spreadsheets()
 	body = { 'values' : [ notFoundItem ] }
-	sheetRange = 'NOTFOUND!A1:B89100'
+	sheetRange = 'NOTFOUND!A1:' + lastColInExtraSheet + maxRowsInExtraSheet
 	sheet.values().append( spreadsheetId=extraSheetID, valueInputOption='RAW', range=sheetRange, body=body ).execute()
 	 
 def writeBill( bill ):
@@ -99,7 +105,7 @@ def writeBill( bill ):
 		
 	# Add detailed rows to the bill sheet	
 	body = { 'values' : detailValues }
-	sheetRange = 'DETAIL!A1:' + lastColInDetailBillSheet + '89100'
+	sheetRange = 'DETAIL!A1:' + lastColInDetailBillSheet + maxRowsInDetailBillSheet
 	result_output = sheet.values().append( spreadsheetId=billSheetID, valueInputOption='RAW', range=sheetRange, body=body ).execute()
 
 	# Create a per bill row to add to the bill sheet	
@@ -110,12 +116,12 @@ def writeBill( bill ):
 					  bill[ 'Total' ] ]
 	broadValues.append( broadValueRow )
 	body = { 'values' : broadValues }
-	sheetRange = 'BROAD!A1:D89100'
+	sheetRange = 'BROAD!A1:' + lastColInBroadBillSheet + maxRowsInBroadBillSheet
 	result_output = sheet.values().append( spreadsheetId=billSheetID, valueInputOption='RAW', range=sheetRange, body=body ).execute()
 		
 def getFrequentProducts():
 	# Get products to plot
-	sheetRange = 'DETAIL!B1:C89100'
+	sheetRange = 'DETAIL!B1:' + lastColInDetailBillSheet + maxRowsInDetailBillSheet
 	sheet = service.spreadsheets()
 	result_input = sheet.values().get( spreadsheetId=billSheetID, range=sheetRange ).execute()
 	values_input = result_input.get( 'values', [])
