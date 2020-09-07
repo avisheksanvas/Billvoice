@@ -18,7 +18,7 @@ lastColInDetailBillSheet = 'I'
 maxRowsInDetailBillSheet = '89100'
 lastColInBroadBillSheet = 'D'
 maxRowsInBroadBillSheet = '89100'
-lastColInExtraSheet = 'B'
+lastColInExtraSheet = 'C'
 maxRowsInExtraSheet = '89100'
 
 def authenticate():

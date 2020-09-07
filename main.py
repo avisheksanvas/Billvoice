@@ -47,21 +47,28 @@ def search():
 	options = _search()
 	
 	if( len( options ) == 0 ):
+		notFoundDesc = simpledialog.askstring( "Item not in stock", "Please enter descriotion?",
+											   initialvalue="Customer request" )
+		while not notFoundDesc:
+			# Pressed cancel or empty string
+			notFoundDesc = simpledialog.askstring( "Item not in stock", "Please enter descriotion?",
+											   	   initialvalue="Customer request" )
 		notFoundItem = []
 		notFoundItem.append( searchText.get( "1.0", "end" ).replace( '\n', '' ) )
 		notFoundItem.append( getDate() )
+		notFoundItem.append( notFoundDesc )
 		googleData.writeNotFoundItem( notFoundItem )
-		display = 'Item Not In Stock'
-		result = 'Failure'
-		messagebox.showinfo( result, display )
 		return
 
 	if( len( options ) > 1 ):
 		optionsText = ""
 		for i, option in enumerate( options ):
-			optionsText += "%d) %s\n" % ( i, option[ 'Text' ] )
+			optionsText += "%d) %s\n" % ( i+1, option[ 'Text' ] )
 		choice = simpledialog.askinteger( "Options", optionsText )
-		item = options[ choice ]
+		while ( not choice ) or ( choice > len( options ) ):
+			# Pressed cancel or wrong choice
+			choice = simpledialog.askinteger( "Options", optionsText )
+		item = options[ choice-1 ]
 	else:
 		item = options[ 0 ]
 	
