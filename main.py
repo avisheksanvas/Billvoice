@@ -89,6 +89,7 @@ def getDate():
 	return currentDate.strftime("%x")
 	
 def isItemsPriceCorrect( finalItems ):
+	# Check if prices entered are appropriate
 	for item in finalItems:
 		try:
 			float( item[ 'SellingPrice' ] )
