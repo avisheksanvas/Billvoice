@@ -77,11 +77,12 @@ def search():
 		for i, option in enumerate( options ):
 			optionsText += "%d) %s\n" % ( i+1, option[ 'Text' ] )
 		choice = 0
-		while ( not choice ) or ( choice > len( options ) ):
+		while ( choice is not None ) and ( choice <= 0 or choice > len( options ) ):
 			# Pressed wrong choice
 			choice = simpledialog.askinteger( "Options", optionsText )
-			if choice is None:
-				return
+		
+		if choice is None:
+			return
 		item = options[ choice-1 ]
 	else:
 		item = options[ 0 ]
