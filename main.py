@@ -36,17 +36,19 @@ def _search():
 						option[ 'Brand' ] = brand
 						option[ 'Sheet' ] = 'ORDER%d!' % ( orderNo + 1 )
 						option[ 'IdxInSheet' ] = idx + 2
-						option[ 'ItemNo' ] = itemNo
+						option[ 'ItemNo' ] = df.loc[ idx, 'ItemNo' ]
 						option[ 'ItemDesc' ] = df.loc[ idx, 'ItemDesc' ]
 						option[ 'Price' ] = df.loc[ idx, 'Price' ]
 						option[ 'QtyLeft' ] = df.loc[ idx, 'QtyLeft' ]
 						option[ 'CostPrice' ] = df.loc[ idx, 'CostPrice' ]
 						option[ 'NepaliPrice' ] = df.loc[ idx, 'NepaliPrice' ]
+						option[ 'LeastPrice' ] = df.loc[ idx, 'LeastPrice' ]
 						setPrice = math.ceil( float( option[ 'Price' ] ) )
 						nepaliPrice = getNepaliPrice( option[ 'NepaliPrice' ] )
-						# We need at least 20% profit on the costing, so:
-						minPriceToSell = math.ceil( float( option[ 'CostPrice' ] ) * 1.2 )
-						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%d---NepaliPrice:%d---Min:%d' \
+						# Min price to sell is Indian MRP * 2. No need to multiply as stored in sheet
+						# after multiplying by 2.
+						minPriceToSell = math.ceil( float( option[ 'LeastPrice' ] ) )
+						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%d---NepaliPrice:%d---LeastPrice:%d' \
 							 				% ( option[ 'ItemNo' ], option[ 'ItemDesc' ], option[ 'Brand' ],
 								 			option[ 'Sheet' ], setPrice, nepaliPrice, minPriceToSell )
 						option[ 'ReadableText' ] = '%s---%s' % ( option[ 'ItemNo' ], option[ 'ItemDesc' ] )
