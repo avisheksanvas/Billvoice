@@ -43,7 +43,7 @@ def loadSheetData():
 	extraSheetID = sheetData.extraSheetID
 	sheets = []
 	
-	sheetRange = 'Sheet1!A1:C100'
+	sheetRange = 'Sheet1!A1:D100'
 	sheet = service.spreadsheets()
 	result_input = sheet.values().get( spreadsheetId=sheetDataSheetID, range=sheetRange ).execute()
 	values_input = result_input.get( 'values', [])
@@ -56,7 +56,8 @@ def loadSheetData():
 		else:
 			brandSheet = { 'brand' :  row[ 'BRAND' ],
 					  	   'id' : row[ 'SHEETLINK' ],
-					  	   'orders' : int( row[ 'ORDERS' ] ) }
+					  	   'orders' : int( row[ 'ORDERS' ] ),
+						   'oldStock' : row[ 'OLDSTOCK' ] == 'Y' }
 			sheets.append( brandSheet )
 	
 def loadData():
@@ -65,15 +66,18 @@ def loadData():
 	for sheetInfo in sheets:
 		# Different orders placed for different brands level
 		dfsPerBrand[ sheetInfo[ 'brand' ] ] = []
-		for order in range( sheetInfo[ 'orders' ] ):
-			sheetRange = 'ORDER%d!A1:' %( order + 1 ) + lastColInStockSheet + maxRowsInStockSheet
+		for order in range( sheetInfo[ 'orders' ] + 1 ):
+			# If there is no old stock, skip loading ORDER0
+			if order == 0 and not sheetInfo[ 'oldStock' ]:
+				continue
+			sheetRange = 'ORDER%d!A1:' %( order ) + lastColInStockSheet + maxRowsInStockSheet
 			sheet = service.spreadsheets()
 			result_input = sheet.values().get( spreadsheetId=sheetInfo[ 'id' ], range=sheetRange ).execute()
 			values_input = result_input.get( 'values', [])
 			if not values_input:
 				print( 'No stock data found for %s-%s' % ( sheetInfo[ 'brand' ], sheetRange ) )
 			df = pd.DataFrame( values_input[1:], columns=values_input[0] )
-			dfsPerBrand[ sheetInfo[ 'brand' ] ].append( df )
+			dfsPerBrand[ sheetInfo[ 'brand' ] ].append( { 'ORDER' : order, 'DATA': df } )
 	
 	return dfsPerBrand
 	

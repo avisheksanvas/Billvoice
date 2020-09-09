@@ -26,10 +26,12 @@ def _search():
 	if brandToSearch not in dfsPerBrand.keys():
 		brandToSearch = 'ALL'
 	options = []
-	for brand, dfs in dfsPerBrand.items():
+	for brand, dfInfos in dfsPerBrand.items():
 		if not( brandToSearch == 'ALL' or brand == brandToSearch ):
 			continue
-		for orderNo, df in enumerate( dfs ):
+		for dfInfo in dfInfos:
+			orderNo = dfInfo[ 'ORDER' ]
+			df = dfInfo[ 'DATA' ] 
 			idxs = df.loc[ df['ItemNo'] == itemNo ].index.values.astype( int )
 			# If nothing found by ItemNo, try to take it as a name
 			if len( idxs ) <= 0:
@@ -40,7 +42,7 @@ def _search():
 					if qtyLeft != '0':
 						option = {} 
 						option[ 'Brand' ] = brand
-						option[ 'Sheet' ] = 'ORDER%d!' % ( orderNo + 1 )
+						option[ 'Sheet' ] = 'ORDER%d!' % ( orderNo )
 						option[ 'IdxInSheet' ] = idx + 2
 						option[ 'ItemNo' ] = df.loc[ idx, 'ItemNo' ]
 						option[ 'ItemDesc' ] = df.loc[ idx, 'ItemDesc' ]
