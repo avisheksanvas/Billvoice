@@ -8,9 +8,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow,Flow
 from google.auth.transport.requests import Request
 import matplotlib.pyplot as plt
 
-billSheetID = sheetData.billSheetID
-extraSheetID = sheetData.extraSheetID
-sheets = sheetData.sheets
+
 qtyLeftCol = 'F'
 lastColInStockSheet = 'I'
 maxRowsInStockSheet = '50000'
@@ -39,6 +37,28 @@ def authenticate():
 
 	service = build( 'sheets', 'v4', credentials=creds )
 
+def loadSheetData():
+	global extraSheetID, billSheetID, sheets
+	sheetDataSheetID = sheetData.sheetDataSheetID
+	extraSheetID = sheetData.extraSheetID
+	sheets = []
+	
+	sheetRange = 'Sheet1!A1:C100'
+	sheet = service.spreadsheets()
+	result_input = sheet.values().get( spreadsheetId=sheetDataSheetID, range=sheetRange ).execute()
+	values_input = result_input.get( 'values', [])
+	if not values_input:
+		print( 'No sheet data found' )
+	df = pd.DataFrame( values_input[1:], columns=values_input[0] )
+	for _, row in df.iterrows():
+		if row[ 'BRAND' ] == 'BILL':
+			billSheetID = row[ 'SHEETLINK' ]
+		else:
+			brandSheet = { 'brand' :  row[ 'BRAND' ],
+					  	   'id' : row[ 'SHEETLINK' ],
+					  	   'orders' : int( row[ 'ORDERS' ] ) }
+			sheets.append( brandSheet )
+	
 def loadData():
 	dfsPerBrand = {}
 	# Brand level
@@ -148,3 +168,4 @@ def getFrequentProducts():
 	plt.show()
 		
 authenticate()
+loadSheetData()
