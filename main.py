@@ -21,8 +21,14 @@ def getNepaliPrice( nepaliPrice ):
 def _search():
 	itemNo = searchText.get( "1.0", "end" ).replace( '\n', '' )
 	itemNo = itemNo.upper()
+	brandToSearch = brandText.get( "1.0", "end" ).replace( '\n', '' )
+	brandToSearch = brandToSearch.upper()
+	if brandToSearch not in dfsPerBrand.keys():
+		brandToSearch = 'ALL'
 	options = []
 	for brand, dfs in dfsPerBrand.items():
+		if not( brandToSearch == 'ALL' or brand == brandToSearch ):
+			continue
 		for orderNo, df in enumerate( dfs ):
 			idxs = df.loc[ df['ItemNo'] == itemNo ].index.values.astype( int )
 			# If nothing found by ItemNo, try to take it as a name
@@ -62,8 +68,8 @@ def search():
 		notFoundDesc = ''
 		while not notFoundDesc:
 			# Entering empty string
-			notFoundDesc = simpledialog.askstring( "Item not in stock", "Please enter descriotion?",
-											   	   initialvalue="Customer request" )
+			notFoundDesc = simpledialog.askstring( "Item not in stock", "Please enter brand name or description:",
+											   	   initialvalue="Customer Request" )
 			# Pressed cancel
 			if notFoundDesc is None:
 				return
@@ -139,9 +145,12 @@ def bill():
 			return
 		confirm = messagebox.askokcancel( "Confirm Bill", billText )
 		if confirm:
+			customer = simpledialog.askstring( "Customer", "Enter customer name:" )
+			if customer is None:
+				return
 			bill = { 
 					'Id' : googleData.getMaxBillID() + 1,
-					'Customer' : customerText.get( "1.0", "end" ).replace( '\n', '' ),
+					'Customer' : customer, 
 					'Date' : getDate(),
 					'Items' : finalItems,
 					'Total' : getTotal( finalItems ),
@@ -183,14 +192,14 @@ canvas.pack()
 searchFrame = tk.Frame( root, bg="#008000" )
 searchFrame.place( relheight=searchAreaHeight, relwidth=1 )
 searchTextWidth = 0.4
-customerTextWidth = 0.4
-searchButtonWidth = 1 - searchTextWidth - customerTextWidth 
+brandTextWidth = 0.4
+searchButtonWidth = 1 - searchTextWidth - brandTextWidth 
 searchText = tk.Text( searchFrame )
 searchText.place( relheight=1, relwidth=searchTextWidth )
 searchText.insert( tk.END, "ItemNo...")
-customerText = tk.Text( searchFrame, bg="#b3ffff")
-customerText.place( relx=searchTextWidth, relheight=1, relwidth=customerTextWidth )
-customerText.insert( tk.END, "Customer...")
+brandText = tk.Text( searchFrame, bg="#b3ffff")
+brandText.place( relx=searchTextWidth, relheight=1, relwidth=brandTextWidth )
+brandText.insert( tk.END, "Brand...")
 searchButton = ttk.Button( searchFrame, text="Search", command=search )
 searchButton.place( relx=1-searchButtonWidth, relheight=1, relwidth=searchButtonWidth )
 # List Frame
