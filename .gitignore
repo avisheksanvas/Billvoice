@@ -4,4 +4,4 @@ __pycache__
 sheetData.py
 toInstall.txt
 .DS_Store
-partNoAndNameSeparator.py
+partNoCleaner.py
