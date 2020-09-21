@@ -139,9 +139,12 @@ python dataVisual.py
 ```
 
 
-## Data Science Involvement 
+## Data Science Involvement ( Work In Progress )
 
 ### Potential Next Order
+Working on a script to generate the next order of items to order, so that tha maximum profit is based. The input to this script will be the previous sold items data. This data is used to generate the most frequently sold items and also items which are not sold frequently, but make high profit. The data is plotted into a graph with quantity sold on one axis ( X axis ) and profit made on one axis ( Y axis ). What we are looking for are items in Quadrant 2,3 and 4. Q4 items are most frequently sold and that make most profit.
+It can easily be seen that the problem of finding the optimum lines for quadrants is a Machine Learning problem.
+[![Potential Order][orderImage]]()
 
 ### Beneficial Customers
 
@@ -196,3 +199,4 @@ Contributions are what make the open source community such an amazing place to b
 [billSheet2]: images/billSheet2.png
 [orderSheet]: images/orderSheet.png
 [extraSheet]: images/extraSheet.png
+[orderImage]: images/orderImage.png
