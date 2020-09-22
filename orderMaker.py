@@ -23,15 +23,15 @@ for brand, dfInfos in dfsPerBrand.items():
 			except ValueError:
 				qtyLeft = 0
 			if row[ 'ItemNo' ] not in stock[ brand ]:
-				stock[ brand ][ row[ 'ItemNo' ] ] = qtyLeft
+				stock[ brand ][ row[ 'ItemNo' ] ] = [ qtyLeft, row[ 'ItemDesc' ] ]
 			else:
-				stock[ brand ][ row[ 'ItemNo' ] ] += qtyLeft
+				stock[ brand ][ row[ 'ItemNo' ] ][0] += qtyLeft
 
 
 for brand in stock.keys():
 	toOrder[ brand ] = {}
 	for itemNo in stock[ brand ].keys():
-		if stock[ brand ][ itemNo ] <= 1:
+		if stock[ brand ][ itemNo ][0] <= 1:
 			toOrder[ brand ][ itemNo ] = stock[ brand ][ itemNo ]
 
 currentDate = datetime.datetime.now()
@@ -39,11 +39,13 @@ workbook = xlsxwriter.Workbook( 'Order.xlsx' )
 for brand in toOrder.keys():
 	worksheet = workbook.add_worksheet( brand )
 	worksheet.write('A1', 'ItemNo')
-	worksheet.write('B1', 'QtyLeft')
+	worksheet.write('B1', 'ItemDesc')
+	worksheet.write('C1', 'QtyLeft')
 	rowNo = 2
 	for itemNo in toOrder[ brand ].keys():
 		worksheet.write('A%d' % rowNo, itemNo )
-		worksheet.write('B%d' % rowNo, toOrder[ brand ][ itemNo ] )
+		worksheet.write('B%d' % rowNo, toOrder[ brand ][ itemNo ][1] )
+		worksheet.write('C%d' % rowNo, toOrder[ brand ][ itemNo ][0] )
 		rowNo += 1
 
 workbook.close()
