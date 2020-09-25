@@ -11,10 +11,10 @@ from scrollableFrame import ScrollableFrame
 items = []
 dfsPerBrand = googleData.loadData()
 
-def getNepaliPrice( nepaliPrice ):
+def convertPriceToFloat( price ):
 	try:
-		float( nepaliPrice )
-		return math.ceil( float( nepaliPrice ) )
+		float( price )
+		return math.ceil( float( price ) )
 	except ValueError:
 		return 0
 
@@ -51,14 +51,14 @@ def _search():
 						option[ 'CostPrice' ] = df.loc[ idx, 'CostPrice' ]
 						option[ 'NepaliPrice' ] = df.loc[ idx, 'NepaliPrice' ]
 						option[ 'LeastPrice' ] = df.loc[ idx, 'LeastPrice' ]
-						setPrice = math.ceil( float( option[ 'Price' ] ) )
-						nepaliPrice = getNepaliPrice( option[ 'NepaliPrice' ] )
-						# Min price to sell is Indian MRP * 2. No need to multiply as stored in sheet
-						# after multiplying by 2.
-						minPriceToSell = math.ceil( float( option[ 'LeastPrice' ] ) )
-						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%d---NepaliPrice:%d---LeastPrice:%d' \
+						option[ 'BillPrice' ] = df.loc[ idx, 'BillPrice' ]
+						setPrice = convertPriceToFloat( option[ 'Price' ] )
+						nepaliPrice = convertPriceToFloat( option[ 'NepaliPrice' ] )
+						minPriceToSell = convertPriceToFloat( option[ 'LeastPrice' ] )
+						billPrice = convertPriceToFloat( option[ 'BillPrice' ] )
+						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%d---NepaliPrice:%d---LeastPrice:%d---BillPrice:%d' \
 							 				% ( option[ 'ItemNo' ], option[ 'ItemDesc' ], option[ 'Brand' ],
-								 			option[ 'Sheet' ], setPrice, nepaliPrice, minPriceToSell )
+								 			option[ 'Sheet' ], setPrice, nepaliPrice, minPriceToSell, billPrice )
 						option[ 'ReadableText' ] = '%s---%s' % ( option[ 'ItemNo' ], option[ 'ItemDesc' ] )
 						options.append( option )
 	return options

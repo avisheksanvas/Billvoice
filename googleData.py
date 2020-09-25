@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 
 qtyLeftCol = 'F'
-lastColInStockSheet = 'I'
+lastColInStockSheet = 'J'
 maxRowsInStockSheet = '50000'
 lastColInDetailBillSheet = 'I'
 maxRowsInDetailBillSheet = '89100'
