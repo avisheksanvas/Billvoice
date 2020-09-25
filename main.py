@@ -32,7 +32,7 @@ def _search():
 		for dfInfo in dfInfos:
 			orderNo = dfInfo[ 'ORDER' ]
 			df = dfInfo[ 'DATA' ] 
-			idxs = df.loc[ df['ItemNo'] == itemNo ].index.values.astype( int )
+			idxs = df.loc[ df['ItemNo'].str.contains( itemNo ) ].index.values.astype( int )
 			# If nothing found by ItemNo, try to take it as a name
 			if len( idxs ) <= 0:
 				idxs = df.loc[ df['ItemDesc'].str.contains( itemNo ) ].index.values.astype( int )
