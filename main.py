@@ -18,6 +18,13 @@ def convertPriceToFloat( price ):
 	except ValueError:
 		return 0
 
+def convertQtyToFloat( qty ):
+	try:
+		float( qty )
+		return float( qty )
+	except ValueError:
+		return 0
+	
 def _search():
 	itemNo = searchText.get( "1.0", "end" ).replace( '\n', '' )
 	itemNo = itemNo.upper()
@@ -38,8 +45,8 @@ def _search():
 				idxs = df.loc[ df['ItemDesc'].str.contains( itemNo ) ].index.values.astype( int )
 			if( len( idxs ) > 0 ):
 				for idx in idxs:
-					qtyLeft = df.loc[ idx, 'QtyLeft' ]
-					if qtyLeft != '0':
+					qtyLeft = int( convertQtyToFloat( df.loc[ idx, 'QtyLeft' ] ) )
+					if qtyLeft > 0:
 						option = {} 
 						option[ 'Brand' ] = brand
 						option[ 'Sheet' ] = 'ORDER%d!' % ( orderNo )
@@ -56,9 +63,9 @@ def _search():
 						nepaliPrice = convertPriceToFloat( option[ 'NepaliPrice' ] )
 						minPriceToSell = convertPriceToFloat( option[ 'LeastPrice' ] )
 						billPrice = convertPriceToFloat( option[ 'BillPrice' ] )
-						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%d---NepaliPrice:%d---LeastPrice:%d---BillPrice:%d' \
+						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%d---NepaliPrice:%d---LeastPrice:%d---BillPrice:%d---QtyLeft:%f' \
 							 				% ( option[ 'ItemNo' ], option[ 'ItemDesc' ], option[ 'Brand' ],
-								 			option[ 'Sheet' ], setPrice, nepaliPrice, minPriceToSell, billPrice )
+								 			option[ 'Sheet' ], setPrice, nepaliPrice, minPriceToSell, billPrice, qtyLeft )
 						option[ 'ReadableText' ] = '%s---%s' % ( option[ 'ItemNo' ], option[ 'ItemDesc' ] )
 						options.append( option )
 	return options
