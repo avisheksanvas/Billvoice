@@ -63,9 +63,12 @@ def _search():
 						nepaliPrice = convertPriceToFloat( option[ 'NepaliPrice' ] )
 						minPriceToSell = convertPriceToFloat( option[ 'LeastPrice' ] )
 						billPrice = convertPriceToFloat( option[ 'BillPrice' ] )
-						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%d---NepaliPrice:%d---LeastPrice:%d---BillPrice:%d---QtyLeft:%d' \
+						'''option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%d---NepaliPrice:%d---LeastPrice:%d---BillPrice:%d---QtyLeft:%d' \
 							 				% ( option[ 'ItemNo' ], option[ 'ItemDesc' ], option[ 'Brand' ],
-								 			option[ 'Sheet' ], setPrice, nepaliPrice, minPriceToSell, billPrice, qtyLeft )
+								 			option[ 'Sheet' ], setPrice, nepaliPrice, minPriceToSell, billPrice, qtyLeft )'''
+						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%d---QtyLeft:%d' \
+							 				% ( option[ 'ItemNo' ], option[ 'ItemDesc' ], option[ 'Brand' ],
+								 			option[ 'Sheet' ], setPrice, qtyLeft )
 						option[ 'ReadableText' ] = '%s---%s' % ( option[ 'ItemNo' ], option[ 'ItemDesc' ] )
 						options.append( option )
 	return options
