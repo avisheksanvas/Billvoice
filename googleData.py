@@ -18,6 +18,8 @@ lastColInBroadBillSheet = 'D'
 maxRowsInBroadBillSheet = '89100'
 lastColInExtraSheet = 'C'
 maxRowsInExtraSheet = '89100'
+lastColInCurrentStockSheet = 'C'
+maxRowsInCurrentStockSheet = '50000'
 
 def authenticate():
 	SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
@@ -43,7 +45,7 @@ def loadSheetData():
 	extraSheetID = sheetData.extraSheetID
 	sheets = []
 	
-	sheetRange = 'Sheet1!A1:D100'
+	sheetRange = 'Sheet1!A1:F100'
 	sheet = service.spreadsheets()
 	result_input = sheet.values().get( spreadsheetId=sheetDataSheetID, range=sheetRange ).execute()
 	values_input = result_input.get( 'values', [])
@@ -57,16 +59,19 @@ def loadSheetData():
 			brandSheet = { 'brand' :  row[ 'BRAND' ],
 					  	   'id' : row[ 'SHEETLINK' ],
 					  	   'orders' : int( row[ 'ORDERS' ] ),
-						   'oldStock' : row[ 'OLDSTOCK' ] == 'Y' }
+						   'oldStock' : row[ 'OLDSTOCK' ] == 'Y',
+						   'totalOrders' : int( row[ 'TOTALORDERS' ] ),
+						   'catalogId' : row[ 'CATALOGSHEET' ] }
 			sheets.append( brandSheet )
 	
-def loadData():
+def loadData( allOrders=False ):
 	dfsPerBrand = {}
 	# Brand level
 	for sheetInfo in sheets:
 		# Different orders placed for different brands level
 		dfsPerBrand[ sheetInfo[ 'brand' ] ] = []
-		for order in range( sheetInfo[ 'orders' ] + 1 ):
+		numOrders = ( sheetInfo[ 'totalOrders' ] if allOrders else sheetInfo[ 'orders' ] ) + 1
+		for order in range( numOrders ):
 			# If there is no old stock, skip loading ORDER0
 			if order == 0 and not sheetInfo[ 'oldStock' ]:
 				continue
@@ -81,6 +86,21 @@ def loadData():
 	
 	return dfsPerBrand
 	
+def writeStock( stock ):
+	sheet = service.spreadsheets()
+	for sheetInfo in sheets:
+		if sheetInfo[ 'catalogId' ] != 'NA':
+			currentStock = []
+			for idx in range( len( stock[ sheetInfo[ 'brand' ] ] ) ):
+				val = stock[ sheetInfo[ 'brand' ] ][ idx ]
+				currentStockRow = [ val[ 0 ],
+									val[ 1 ][ 0 ],
+									val[ 1 ][ 1 ] ]
+				currentStock.append( currentStockRow )
+			body = { 'values' : currentStock }
+			sheetRange = 'CurrentStock!A2:' + lastColInCurrentStockSheet + maxRowsInCurrentStockSheet
+			sheet.values().update( spreadsheetId=sheetInfo[ 'catalogId' ], valueInputOption='RAW', range=sheetRange, body=body ).execute()
+
 def getMaxBillID():
 	sheetRange = 'BROAD!A2:' + lastColInBroadBillSheet + maxRowsInBroadBillSheet
 	sheet = service.spreadsheets()

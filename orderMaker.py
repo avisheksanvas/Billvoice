@@ -31,8 +31,7 @@ for brand, dfInfos in dfsPerBrand.items():
 for brand in stock.keys():
 	toOrder[ brand ] = {}
 	for itemNo in stock[ brand ].keys():
-		if stock[ brand ][ itemNo ][0] <= 1:
-			toOrder[ brand ][ itemNo ] = stock[ brand ][ itemNo ]
+		toOrder[ brand ][ itemNo ] = stock[ brand ][ itemNo ]
 
 currentDate = datetime.datetime.now()
 workbook = xlsxwriter.Workbook( 'Order.xlsx' )

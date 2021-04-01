@@ -46,7 +46,7 @@ def _search():
 			if( len( idxs ) > 0 ):
 				for idx in idxs:
 					qtyLeft = int( convertQtyToFloat( df.loc[ idx, 'QtyLeft' ] ) )
-					if qtyLeft > 0:
+					if qtyLeft >= 0:
 						option = {} 
 						option[ 'Brand' ] = brand
 						option[ 'Sheet' ] = 'ORDER%d!' % ( orderNo )
@@ -66,9 +66,9 @@ def _search():
 						'''option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%d---NepaliPrice:%d---LeastPrice:%d---BillPrice:%d---QtyLeft:%d' \
 							 				% ( option[ 'ItemNo' ], option[ 'ItemDesc' ], option[ 'Brand' ],
 								 			option[ 'Sheet' ], setPrice, nepaliPrice, minPriceToSell, billPrice, qtyLeft )'''
-						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%d---QtyLeft:%d' \
+						option[ 'Text' ] = '%s---%s---Brand:%s---Order:%s---Price:%d---BillPrice%d---QtyLeft:%d' \
 							 				% ( option[ 'ItemNo' ], option[ 'ItemDesc' ], option[ 'Brand' ],
-								 			option[ 'Sheet' ], setPrice, qtyLeft )
+								 			option[ 'Sheet' ], setPrice, billPrice, qtyLeft )
 						option[ 'ReadableText' ] = '%s---%s' % ( option[ 'ItemNo' ], option[ 'ItemDesc' ] )
 						options.append( option )
 	return options
